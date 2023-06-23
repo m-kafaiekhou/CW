@@ -1,0 +1,30 @@
+import json
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class TodoHandler(BaseHTTPRequestHandler):
+    todos = []
+
+    def set_header(self, status_code=200):
+        self.send_response(status_code)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+
+    def do_GET(self):
+        self.set_header()
+        response = {
+            'todos': self.todos
+        }
+        self.wfile.write(json.dumps(response).encode())
+
+    def do_POST(self):
+        post_data = self.rfile.read()
+        new_todo = json.loads(post_data.decode())
+        self.todos.append(new_todo)
+        self.set_header(201)
+        self.wfile.write(json.dumps(new_todo).encode())
+
+if __name__ == '__main__':
+    server_address = ('localhost', 8000)
+    httpd = HTTPServer(server_address, TodoHandler)
+    print('note')
+    httpd.serve_forever()
