@@ -1,11 +1,11 @@
-#p2 #p4 {
+p:nth-child(even) {
     color: blue;
 }
 
-#p1 {
+p:first-child {
     color: red;
 }
 
-#p6 {
+p:last-child {
     color: green;
 }
