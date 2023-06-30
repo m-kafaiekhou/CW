@@ -1,0 +1,7 @@
+.first {
+    color: red;
+}
+
+.second div:first-child {
+    color: blue;
+}
