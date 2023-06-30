@@ -1,0 +1,33 @@
+.a-first {
+    text-decoration: none;
+    color: #000;
+}
+
+.a-first:hover {
+    color: blue;
+}
+
+.a-first:visited {
+    color: green;
+}
+
+.a-first:active {
+    color: red;
+}
+
+.a-second {
+    text-decoration: none;
+    color: blue;
+}
+
+.a-second:hover {
+    color: red;
+}
+
+.a-second:visited {
+    color: limegreen;
+}
+
+.a-second:active {
+    color: yellow;
+}
