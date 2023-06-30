@@ -1,14 +1,17 @@
 .a-first {
     text-decoration: none;
     color: #000;
+    font-size: 50px;
+    margin: 50px;
+    display: block;
+    }
+
+.a-first:visited {
+    color: green;
 }
 
 .a-first:hover {
     color: blue;
-}
-
-.a-first:visited {
-    color: green;
 }
 
 .a-first:active {
@@ -18,16 +21,27 @@
 .a-second {
     text-decoration: none;
     color: blue;
-}
-
-.a-second:hover {
-    color: red;
+    font-size: 50px;
+    margin: 50px;
+    display: block;
 }
 
 .a-second:visited {
     color: limegreen;
 }
 
+.a-second:hover {
+    color: red;
+}
+
 .a-second:active {
     color: yellow;
 }
+
+.bt {
+    font-family: sans-serif;
+    text-align: center;
+    background-color: black;
+}
+
+
