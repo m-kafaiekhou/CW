@@ -18,20 +18,24 @@ Post List
     <div class="row">
         <div class="col-9">
             <div class="row">
-                {% for cat in categories_list %}
-                    <div class="col-lg-6">
-                        <a href="{% url 'category_detail' cat.id%}" class="card-link">
-                            <div class="card shadow-sm my-3">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ cat.name}}</h5>
-                                    <p class="card-text py-3">
-                                        {{ cat.description }}
-                                    </p>
+                {% if categories_list %}
+                    {% for cat in categories_list %}
+                        <div class="col-lg-6">
+                            <a href="{% url 'category_detail' cat.id%}" class="card-link">
+                                <div class="card shadow-sm my-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ cat.name}}</h5>
+                                        <p class="card-text py-3">
+                                            {{ cat.description }}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                {% endfor %}
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                        <h1 class="text-bold shadow-sm">No Data Found 404!</h1>
+                {% endif %}
             </div>
         </div>
         <div class="col-3">

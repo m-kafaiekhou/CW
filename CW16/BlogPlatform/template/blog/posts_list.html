@@ -17,19 +17,23 @@ Post List
 <div class="container mt-4">
     <div class="row">
         <div class="col-9">
-            {% for post in posts_list %}
-                <a href="{% url 'post_detail' post.id %}" class="card-link">
-                    <div class="card shadow-sm my-3">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ post.title }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted small py-2">{{ post.datetime_created }}</h6>
-                            <p class="card-text py-3">
-                                {{ post.text }}
-                            </p>
+            {% if posts_list %}
+                {% for post in posts_list %}
+                    <a href="{% url 'post_detail' post.id %}" class="card-link">
+                        <div class="card shadow-sm my-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ post.title }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted small py-2">{{ post.datetime_created }}</h6>
+                                <p class="card-text py-3">
+                                    {{ post.text }}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            {% endfor %}
+                    </a>
+                {% endfor %}
+            {% else %}
+                <h1 class="text-bold shadow-sm">No Data Found 404!</h1>
+            {% endif %}
         </div>
         <div class="col-3">
 
