@@ -17,19 +17,23 @@ Post List
 <div class="container mt-4">
     <div class="row">
         <div class="col-9">
-            {% for author in author_list %}
-                <a href="{% url 'author_detail' author.id%}" class="card-link">
-                    <div class="card shadow-sm my-3">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ author.name }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted small py-2">{{ author.email }}</h6>
-                            <p class="card-text py-3">
-                                {{ author.bio }}
-                            </p>
-                        </div>
+            <div class="row">
+                {% for author in author_list %}
+                    <div class="col-lg-6">
+                        <a href="{% url 'author_detail' author.id%}" class="card-link">
+                            <div class="card shadow-sm my-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ author.name }}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted small py-2">{{ author.email }}</h6>
+                                    <p class="card-text py-3">
+                                        {{ author.bio }}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
         <div class="col-3">
 

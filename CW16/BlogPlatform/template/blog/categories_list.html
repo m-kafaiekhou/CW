@@ -17,18 +17,22 @@ Post List
 <div class="container mt-4">
     <div class="row">
         <div class="col-9">
-            {% for cat in categories_list %}
-                <a href="{% url 'category_detail' cat.id%}" class="card-link">
-                    <div class="card shadow-sm my-3">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ cat.name}}</h5>
-                            <p class="card-text py-3">
-                                {{ cat.description }}
-                            </p>
-                        </div>
+            <div class="row">
+                {% for cat in categories_list %}
+                    <div class="col-lg-6">
+                        <a href="{% url 'category_detail' cat.id%}" class="card-link">
+                            <div class="card shadow-sm my-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ cat.name}}</h5>
+                                    <p class="card-text py-3">
+                                        {{ cat.description }}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
         <div class="col-3">
 
