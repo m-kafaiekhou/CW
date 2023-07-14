@@ -26,7 +26,7 @@ Post List
                                     <div class="card-body">
                                         <h5 class="card-title">{{ cat.name}}</h5>
                                         <p class="card-text py-3">
-                                            {{ cat.description }}
+                                            {{ cat.description|truncatewords:10 }}
                                         </p>
                                     </div>
                                 </div>

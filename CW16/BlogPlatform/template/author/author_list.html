@@ -27,7 +27,7 @@ Post List
                                         <h5 class="card-title">{{ author.name }}</h5>
                                         <h6 class="card-subtitle mb-2 text-muted small py-2">{{ author.email }}</h6>
                                         <p class="card-text py-3">
-                                            {{ author.bio }}
+                                            {{ author.bio|truncatewords:10 }}  
                                         </p>
                                     </div>
                                 </div>
