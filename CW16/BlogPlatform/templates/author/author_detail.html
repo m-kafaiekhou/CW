@@ -8,10 +8,10 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-9">
             <div class="card shadow my-3 p-5">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-8">
                         <div class="d-inline-block">
                             <h1>{{ author.name }}</h1>
                             <h4>{{ author.email }}</h4>
@@ -19,13 +19,13 @@
                         </div>
                     </div>
                     {% if author.image %}
-                        <div class="col-md-4">
+                        <div class="col-4">
                             <div class="d-inline-block text-md-end">
                                 <img src="{{ author.image.url }}" alt="author image" width="200">
                             </div>
                         </div>
                     {% else %}
-                        <div class="col-md-4">
+                        <div class="col-4">
                             <div class="d-inline-block text-md-end">
                                 <img src="{% static 'images/not_found.jpeg' %}" alt="author image" width="200">
                             </div>
@@ -34,7 +34,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-3">
             <div class="card my-4">
                 <h5 class="card-header">About</h5>
                 <div class="card-body">
