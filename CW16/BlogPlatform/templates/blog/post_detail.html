@@ -4,6 +4,9 @@
     post detail
 {% endblock %}
 
+{% block style %}
+{% endblock %}
+
 {% block content %}
     <div class="container mt-4">
         <div class="row">
@@ -11,7 +14,7 @@
 
                 <div class="card shadow my-3 p-5">
                     <h1>{{ post.title }}</h1>
-                    <p class="small text-muted mt-2">By: {{ post.author }}</p>
+                    <p class="small text-muted mt-2">By: <a href="{% url 'author_detail' post.author.id %}" class="text-decoration-none">{{ post.author.name }}</a> / <a href="{% url 'post_list_category' post.category.id %}" class="text-decoration-none">{{ post.category.name }}</a></p>
                     <p class="mt-2">{{ post.text }}</p>
                 </div>
             </div>
@@ -26,8 +29,24 @@
                         </a>
                     </div>
                 </div>
-
             </div>
+            <div class="row">
+            <div class="col-9">
+            <div class="card shadow my-3 p-5">
+                <h3>Comments:</h3>
+                {% for comment in comments %}
+                    <div class="border-bottom py-3">
+                        <small>By: {{ comment.author.name }}</small>
+                        <br>
+                        <h5>{{ comment.content }}</h5>  
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+            
+
+        
         </div>
     </div>
 {% endblock %}

@@ -14,4 +14,5 @@ urlpatterns = [
     path('categories/', categories_list_view, name='categories_list'),
     path('posts/<int:pk>/', post_detail_view, name='post_detail'),
     path('categories/<int:pk>/', category_detail_view, name='category_detail'),
+    path('posts/category/<int:category>/', post_list_view, name='post_list_category'),
 ]
