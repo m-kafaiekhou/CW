@@ -1,0 +1,32 @@
+{%extends 'base.html'%}
+ {% block title%}
+        <title>Maktab Blog</title>
+{%endblock title%}
+{% block content%}
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    {% if query %}
+                        {% for cat in query %}
+                            <div class="col-lg-6">
+                                <a href="{% url 'post_details' cat.id%}" class="card-link">
+                                    <div class="card shadow-sm my-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ cat.title}}</h5>
+                                            <p class="card-text py-3">
+                                                {{ cat.content|truncatewords:10 }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <h1 class="text-bold shadow-sm">No Data Found 404!</h1>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content%}
