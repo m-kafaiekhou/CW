@@ -1,0 +1,171 @@
+{% extends '_base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/task_list.css' %}">
+{% endblock %}
+{% block navbar_item %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'categories' %}">Categories</a>
+    </li>
+{% endblock %}
+{% block content %}
+    <div class="px-5 pt-5">
+    <div class="row mx-4 my-5">
+        <div class="col-lg-2 col-md-5 col-sm-6 col-12 mb-4">
+            <div class="card bg-light mt-3">
+                <header class="card-heading bg-primary px-1">
+                    Filter
+                </header>
+                <form action="" method="get">
+                    <div class="panel-body mx-1">
+                        <label class="mt-1">Status:</label>
+                        {% if ad == 'asc' %}
+                            <div class="form-check mt-1 mb-2">
+                                <input value="desc" class="form-check-input" type="radio" name="ad"
+                                       id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Descending
+                                </label>
+                            </div>
+                            <div class="form-check mb-4">
+                                <input value="asc" class="form-check-input" type="radio" name="ad"
+                                       id="flexRadioDefault2" checked>
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    Ascending
+                                </label>
+                            </div>
+                        {% else %}
+                            <div class="form-check mt-1 mb-2">
+                                <input value="desc" class="form-check-input" type="radio" name="ad"
+                                       id="flexRadioDefault1" checked>
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Descending
+                                </label>
+                            </div>
+                            <div class="form-check mb-4">
+                                <input value="asc" class="form-check-input" type="radio" name="ad"
+                                       id="flexRadioDefault2">
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    Ascending
+                                </label>
+                            </div>
+                        {% endif %}
+                        <div class="form-group mb-5">
+                            <label>Order by:</label>
+                            <select name="order" class="form-control hasCustomSelect"
+                                    style="width: 90%; position: absolute; opacity: 100; height: 34px; font-size: 12px;">
+                                {% if order == 'title' %}
+                                    <option value="title" selected>Title</option>
+                                    <option value="due_date">Due Date</option>
+                                {% else %}
+                                    <option value="title" selected>Title</option>
+                                    <option value="due_date" selected>Due Date</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Filter</button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-5 col-sm-6 col-12 mb-4">
+            {#                <h3 class="text-center">Done</h3>#}
+            {% for task in page_obj %}
+                {% if task.status == 'd' %}
+                    <a href="{% url 'task_detail' task.id %}" style="text-decoration: none; color: black">
+                        <div class="card my-3">
+                            <div class="card-header bg-success">
+                                {{ task.get_status_display }}
+                            </div>
+                            <div class="card-body">
+                                <blockquote class="blockquote mb-0">
+                                    <p>{{ task.title }}</p>
+                                    <footer class="blockquote-footer">{{ task.due_date }}</footer>
+                                </blockquote>
+                            </div>
+                        </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="col-lg-3 col-md-5 col-sm-6 col-12 mb-4">
+            {#                <h3 class="text-center">To Do</h3>#}
+            {% for task in page_obj %}
+                {% if task.status == 't' %}
+                    <a href="{% url 'task_detail' task.id %}" style="text-decoration: none; color: black">
+                        <div class="card my-3">
+                            <div class="card-header bg-primary">
+                                {{ task.get_status_display }}
+                            </div>
+                            <div class="card-body">
+                                <blockquote class="blockquote mb-0">
+                                    <p>{{ task.title }}</p>
+                                    <footer class="blockquote-footer">{{ task.due_date }}</footer>
+                                </blockquote>
+                            </div>
+                        </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="col-lg-3 col-md-5 col-sm-6 col-12 mb-4">
+{#                            <h3 class="text-center">Did Not Finish</h3>#}
+            {% for task in page_obj %}
+                {% if task.status == 'dnf' %}
+                    <a href="{% url 'task_detail' task.id %}" style="text-decoration: none; color: black">
+                        <div class="card my-3">
+                            <div class="card-header bg-danger">
+                                {{ task.get_status_display }}
+                            </div>
+                            <div class="card-body">
+                                <blockquote class="blockquote mb-0">
+                                    <p>{{ task.title }}</p>
+                                    <footer class="blockquote-footer">{{ task.due_date }}</footer>
+                                </blockquote>
+                            </div>
+                        </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="h-100 d-flex justify-content-center">
+        <div class="row ">
+            <nav aria-label="Page navigation" class="paginator-bottom-center">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1&ad={{ ad }}&order={{ order }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">begin</span>
+                            </a>
+                        </li>   {% endif %}
+
+                    {% for n in page_obj.paginator.page_range %}
+                        {% if page_obj.number == n %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ n }}<span class="sr-only">(current)</span></span>
+                            </li>
+                        {% elif n > page_obj.number|add:'-4' and n < page_obj.number|add:'4' %}
+                            <li class="page-item"><a class="page-link"
+                                                     href="?page={{ n }}&ad={{ ad }}&order={{ order }}">{{ n }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?page={{ page_obj.paginator.num_pages }}&ad={{ ad }}&order={{ order }}"
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">end</span>
+                            </a>
+                        </li>
+                    {% endif %}   </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends '_base.html' %}
+
+{% block page_title %}
+    Task Detail
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-9">
+
+                <div class="card shadow my-3 p-5">
+                    <h1>{{ task.title }}</h1>
+                    <p class="small text-muted mt-2">Due date: {{ task.due_date }}</p>
+                    <p class="mt-2">{{ task.description }}</p>
+                    <div>
+                        <a href="#" class="btn btn-sm btn-info">Edit</a>
+                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                    </div>
+                </div>
+
+                <div class="card shadow my-3 p-5">
+                    <h3>Notes:</h3>
+                    {% for note in notes %}
+                        <div>
+                            <small>{{ note.created_at }}</small>
+                            <br>
+                            <h5>{{ note.note }}</h5>
+                            <h5>
+                                -------------------------------------------------------------------------------------------</h5>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

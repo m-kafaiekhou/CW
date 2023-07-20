@@ -1,0 +1,92 @@
+{% extends '_base.html' %}
+
+{% block page_title %}
+    categories
+{% endblock %}
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                {% for task in page_obj %}
+                    {#                <a href="{% url 'task_detail' task.id %}" style="text-decoration: none">#}
+
+                    <div class="col-lg-4 col-md-6 col-12">
+                        <a href="{% url 'category_task' task.id %}" style="text-decoration: none; color: black">
+                            <div class="card my-5">
+
+                                <div class="card-header bg-primary">
+                                    {{ task.name }}
+                                </div>
+
+                                <div class="card-body">
+                                    <blockquote class="blockquote mb-0">
+                                        <p>{{ task.date_created }}</p>
+                                    </blockquote>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+        <div class="h-100 d-flex justify-content-center">
+            {#    <div class="row ">#}
+            {#    <div class="col-5">#}
+            <nav aria-label="Page navigation" class="paginator-bottom-center">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">begin</span>
+                            </a>
+                        </li>   {% endif %}
+
+                    {% for n in page_obj.paginator.page_range %}
+                        {% if page_obj.number == n %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ n }}<span class="sr-only">(current)</span></span>
+                            </li>
+                        {% elif n > page_obj.number|add:'-4' and n < page_obj.number|add:'4' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ n }}">{{ n }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">end</span>
+                            </a>
+                        </li>
+                    {% endif %}   </ul>
+            </nav>
+        </div>
+        <div class="container me-5 mt-4">
+            <div class="row">
+                <div class="col-10">
+                    <div class="card shadow my-3 p-5">
+                        <h3>Add new Category:</h3>
+                        <form action="{% url 'categories' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group py-2">
+                                <label class="py-1">Enter Category title</label>
+                                <input type="text" class="form-control" placeholder="e.g. Some Title" name="title">
+                            </div>
+                            <div class="form-group py-2">
+                                <label class="py-1">Enter Category description:</label>
+                                <textarea class="form-control" name="description" rows="8"
+                                          placeholder="Enter your description here..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {#    </div>#}
+    {#    </div>#}
+{% endblock %}
