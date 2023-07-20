@@ -5,7 +5,8 @@ from .views import (
     tasks_list_view,
     task_detail_view,
     categories_view,
-    category_task_view
+    category_task_view,
+    category_create_view,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path('task/<int:pk>/', task_detail_view, name="task_detail"),
     path('categories/', categories_view, name="categories"),
     path('categories/<str:cat>/', category_task_view, name="category_task"),
+    path('category/create/', category_create_view, name='category_create'),
 ]

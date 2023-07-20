@@ -74,3 +74,10 @@ def category_task_view(request, cat):
     page_obj = paginator.get_page(page_number)
     context = {'page_obj': page_obj}
     return render(request, 'taskmanager/home.html', context=context)
+
+
+def category_create_view(request):
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    Category.objects.create(name=title, description=description)
+    return redirect('categories')
