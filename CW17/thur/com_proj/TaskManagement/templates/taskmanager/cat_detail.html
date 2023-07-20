@@ -41,6 +41,52 @@
 
         </div>
 
+        <div class="container me-5 mt-4">
+            <div class="row">
+                <div class="col-10">
+                    <div class="card shadow my-3 p-5">
+                        <h3>Add new Task:</h3>
+                        <form action="{% url 'task_cat' category %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group py-2">
+                                <label class="py-1">Enter Task title</label>
+                                <input required type="text" class="form-control" placeholder="e.g. Some Title"
+                                       name="title">
+                            </div>
+                            <div class="form-group py-2">
+                                <label class="py-1">Enter Due date:</label>
+                                <input required type="date" class="form-control" placeholder="e.g. Some Title"
+                                       name="due_date">
+                            </div>
+                            <div class="form-group py-2">
+                                <label class="py-1">Enter Status:</label>
+                                <select name="status" class="form-control">
+                                    {% for sk, sv in status.items %}
+                                        <option value="{{ sk }}" selected>{{ sv }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group py-2">
+                                <label class="py-1">Enter description:</label>
+                                <textarea class="form-control" name="description" rows="8"
+                                          placeholder="Enter your description here..."></textarea>
+                            </div>
+                            <div class="form-group py-2">
+                                <label class="py-1">Enter Tags:</label>
+                                <select name="tag" class="form-control" multiple>
+                                    {% for s in tag %}
+                                        <option value="{{ s.id }}" selected>{{ s.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <input hidden value="{{ category }}" name="category">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="h-100 d-flex justify-content-center">
             {#    <div class="row ">#}
             {#    <div class="col-5">#}

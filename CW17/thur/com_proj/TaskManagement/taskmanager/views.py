@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .models import Task, Note, Category
+from .models import Task, Note, Category, Tag
 
 # Create your views here.
 
@@ -45,7 +45,10 @@ def tasks_list_view(request):
     paginator = Paginator(tasks, 6)
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj, 'order': order, 'ad': ad}
+    tags = Tag.objects.all()
+    category = Category.objects.all()
+    context = {'page_obj': page_obj, 'order': order, 'ad': ad,
+               'status': dict(Task.STATUS_CHOICES), 'tag': tags, 'category': category}
 
     return render(request, 'taskmanager/view_all.html', context=context)
 
@@ -72,8 +75,9 @@ def category_task_view(request, cat):
     paginator = Paginator(tasks, 6)
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj}
-    return render(request, 'taskmanager/home.html', context=context)
+    tags = Tag.objects.all()
+    context = {'page_obj': page_obj, 'category': cat, 'status': dict(Task.STATUS_CHOICES), 'tag': tags}
+    return render(request, 'taskmanager/cat_detail.html', context=context)
 
 
 def category_create_view(request):
@@ -81,3 +85,39 @@ def category_create_view(request):
     description = request.POST.get('description')
     Category.objects.create(name=title, description=description)
     return redirect('categories')
+
+
+def task_create_view(request):
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    tags = request.POST.get('tag')
+    tags_list = []
+    for tag in tags:
+        tags_list.append(Tag.objects.get(id=tag))
+
+    category = Category.objects.get(id=request.POST.get('category'))
+    due_date = request.POST.get('due_date')
+    status = request.POST.get('status')
+
+    Task.objects.create(title=title, description=description,
+                        category=category, due_date=due_date, status=status).tags.set(tags_list)
+    return redirect('task_list')
+
+
+def task_cat_create_view(request, cat):
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    tags = request.POST.get('tag')
+    tags_list = []
+    for tag in tags:
+        tags_list.append(Tag.objects.get(id=tag))
+
+    category = Category.objects.get(id=request.POST.get('category'))
+    due_date = request.POST.get('due_date')
+    status = request.POST.get('status')
+
+    Task.objects.create(title=title, description=description,
+                    category=category, due_date=due_date, status=status).tags.set(tags_list)
+    return redirect('category_task', cat)
+
+
