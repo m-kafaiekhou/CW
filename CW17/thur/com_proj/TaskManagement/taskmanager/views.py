@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import Task, Note, Category, Tag
@@ -198,4 +198,26 @@ def tag_update_view(request, pk):
     tag.save()
 
     return redirect('tag_detail', pk)
+
+
+def tag_create_view(request):
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    tag = Tag.objects.create(name=title, description=description)
+    # task = Task.objects.get(pk=taskpk).tags
+
+    return redirect('tag_detail', tag.id)
+
+
+def delete_view(request, mod, pk):
+    if mod == "tag":
+        obj = get_object_or_404(Tag, pk=pk)
+    if mod == "cat":
+        obj = get_object_or_404(Category, pk=pk)
+    if mod == "task":
+        obj = get_object_or_404(Task, pk=pk)
+    if request.method == 'POST':
+        obj.delete()
+        return redirect('home')
+    return render(request, 'taskmanager/delete.html', context={'obj': obj, 'mod': mod})
 
