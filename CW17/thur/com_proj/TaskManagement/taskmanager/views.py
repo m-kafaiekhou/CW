@@ -121,3 +121,27 @@ def task_cat_create_view(request, cat):
     return redirect('category_task', cat)
 
 
+def category_detail_view(request, pk):
+    category = Category.objects.get(id=pk)
+    context = {'category': category}
+    return render(request, 'taskmanager/category_detail.html', context=context)
+
+
+def category_update_view(request, pk):
+    post = Category.objects.get(pk=pk)
+
+    name = request.POST.get('name')
+    description = request.POST.get('description')
+
+    if name:
+        post.name = name
+    if description:
+        post.description = description
+
+    post.save()
+
+    return redirect('category_detail', pk)
+
+
+
+
