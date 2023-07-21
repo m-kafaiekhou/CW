@@ -56,7 +56,9 @@ def tasks_list_view(request):
 def task_detail_view(request, pk):
     task = Task.objects.get(id=pk)
     notes = Note.objects.filter(task=task)
-    context = {'task': task, 'notes': notes}
+    tags = Tag.objects.all()
+    category = Category.objects.all()
+    context = {'task': task, 'notes': notes, 'status': dict(Task.STATUS_CHOICES), 'tag': tags, 'category': category}
     return render(request, 'taskmanager/task_detail.html', context=context)
 
 
@@ -141,6 +143,39 @@ def category_update_view(request, pk):
     post.save()
 
     return redirect('category_detail', pk)
+
+
+def task_update_view(request, pk):
+    task = Task.objects.get(pk=pk)
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    tags = request.POST.get('tag')
+    tags_list = []
+    try:
+        for tag in tags:
+            tags_list.append(Tag.objects.get(id=tag))
+    except:
+        pass
+    category = request.POST.get('category')
+    due_date = request.POST.get('due_date')
+    status = request.POST.get('status')
+
+    if title:
+        task.title = title
+    if description:
+        task.description = description
+    if tags_list:
+        task.tags.set(tags_list)
+    if category != "none":
+        task.category = Category.objects.get(id=category)
+    if due_date:
+        task.due_date = due_date
+    if status != "none":
+        task.status = status
+
+    task.save()
+
+    return redirect('task_detail', pk)
 
 
 

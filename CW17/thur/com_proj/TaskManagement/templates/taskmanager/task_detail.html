@@ -13,10 +13,11 @@
                     <h1>{{ task.title }}</h1>
                     <p class="small text-muted mt-2">Due date: {{ task.due_date }}</p>
                     <p class="mt-2">{{ task.description }}</p>
-                    <div>
-                        <a href="#" class="btn btn-sm btn-info">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                    </div>
+                    Tags:
+                    {% for tag in task.tags.all %}
+                    <h4 class="small text-muted mt-2">{{ tag }}</h4>
+                    {% endfor %}
+                    <p class="small text-muted mt-2">Due date: {{ task.category }}</p>
                 </div>
 
                 <div class="card shadow my-3 p-5">
@@ -49,8 +50,9 @@
                         <div class="form-group py-2">
                             <label class="py-1">Enter Status:</label>
                             <select name="status" class="form-control">
+                                <option value="none" selected>Select an Option</option>
                                 {% for sk, sv in status.items %}
-                                    <option value="{{ sk }}" selected>{{ sv }}</option>
+                                    <option value="{{ sk }}">{{ sv }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -63,15 +65,16 @@
                             <label class="py-1">Enter Tags:</label>
                             <select name="tag" class="form-control" multiple>
                                 {% for s in tag %}
-                                    <option value="{{ s.id }}" selected>{{ s.name }}</option>
+                                    <option value="{{ s.id }}">{{ s.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="form-group py-2">
                             <label class="py-1">Enter Category:</label>
                             <select name="category" class="form-control">
+                                <option value="none" selected>Select an Option</option>
                                 {% for s in category %}
-                                    <option value="{{ s.id }}" selected>{{ s.name }}</option>
+                                    <option value="{{ s.id }}">{{ s.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>

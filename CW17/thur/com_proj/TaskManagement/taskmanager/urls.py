@@ -11,6 +11,7 @@ from .views import (
     task_cat_create_view,
     category_detail_view,
     category_update_view,
+    task_update_view,
 )
 
 urlpatterns = [
@@ -25,4 +26,5 @@ urlpatterns = [
     path('task/create/<str:cat>/', task_cat_create_view, name="task_cat"),
     path('category/detail/<int:pk>/', category_detail_view, name='category_detail'),
     path('category/update/<int:pk>/', category_update_view, name='category_update'),
+    path('task/update/<int:pk>/', task_update_view, name='task_update'),
 ]
