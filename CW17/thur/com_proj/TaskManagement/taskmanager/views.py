@@ -178,5 +178,24 @@ def task_update_view(request, pk):
     return redirect('task_detail', pk)
 
 
+def tag_detail_view(request, pk):
+    tag = Tag.objects.get(id=pk)
+    context = {'tag': tag}
+    return render(request, 'taskmanager/tag_detail.html', context=context)
 
+
+def tag_update_view(request, pk):
+    tag = Tag.objects.get(pk=pk)
+
+    name = request.POST.get('name')
+    description = request.POST.get('description')
+
+    if name:
+        tag.name = name
+    if description:
+        tag.description = description
+
+    tag.save()
+
+    return redirect('tag_detail', pk)
 

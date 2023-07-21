@@ -19,17 +19,17 @@
             </div>
             <div class="col-10">
                 <div class="card shadow my-3 p-5">
-                    <h3>update Task:</h3>
+                    <h3>update Category:</h3>
                     <form action="{% url 'category_update' category.id %}" method="POST">
                         {% csrf_token %}
                         <div class="form-group py-2">
                             <label class="py-1">Enter title:</label>
-                            <input type="text" class="form-control" placeholder="e.g. Some Title" name="name">
+                            <input type="text" class="form-control" placeholder="e.g. Some Title" name="name" value="{{ category.name }}">
                         </div>
                         <div class="form-group py-2">
                             <label class="py-1">Enter description:</label>
                             <textarea class="form-control" name="description" rows="8"
-                                      placeholder="Enter your post text here..."></textarea>
+                                      placeholder="Enter your post text here...">{{ category.description }}</textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
