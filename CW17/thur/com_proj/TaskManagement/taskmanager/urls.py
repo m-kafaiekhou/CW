@@ -15,7 +15,9 @@ from .views import (
     tag_detail_view,
     tag_update_view,
     tag_create_view,
-    delete_view,
+    task_delete_view,
+    category_delete_view,
+    history_view,
 )
 
 urlpatterns = [
@@ -31,8 +33,10 @@ urlpatterns = [
     path('category/detail/<int:pk>/', category_detail_view, name='category_detail'),
     path('category/update/<int:pk>/', category_update_view, name='category_update'),
     path('task/update/<int:pk>/', task_update_view, name='task_update'),
-    path('tag/create/', tag_create_view, name="tag_create"),
+    path('tag/create/<int:taskpk>/', tag_create_view, name="tag_create"),
     path('tag/detail/<int:pk>/', tag_detail_view, name='tag_detail'),
     path('tag/update/<int:pk>/', tag_update_view, name='tag_update'),
-    path('delete/<str:mod>/<int:pk>/', delete_view, name='delete')
+    path('delete/task/<int:pk>/', task_delete_view, name='delete_task'),
+    path('delete/categroy/<int:pk>/', category_delete_view, name='delete_category'),
+    path('History/', history_view, name='Histories'),
 ]

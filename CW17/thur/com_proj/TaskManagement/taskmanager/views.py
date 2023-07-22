@@ -2,8 +2,55 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import Task, Note, Category, Tag
+import json
 
-# Create your views here.
+
+def read_cookie(request):
+    history = request.COOKIES.get('history', None)
+    if history:
+        history = json.loads(history)
+        target = history.get('read')
+        target.append(request.path)
+        history.update({'read': target})
+    else:
+        history = {"read": [request.path], 'create': [], 'update': [], 'delete': []}
+    return json.dumps(history)
+
+
+def create_cookie(request):
+    history = request.COOKIES.get('history', None)
+    if history:
+        history = json.loads(history)
+        target = history.get('create')
+        target.append(request.path)
+        history.update({'create': target})
+    else:
+        history = {"read": [], 'create': [request.path], 'update': [], 'delete': []}
+    return json.dumps(history)
+
+
+def update_cookie(request):
+    history = request.COOKIES.get('history', None)
+    if history:
+        history = json.loads(history)
+        target = history.get('update')
+        target.append(request.path)
+        history.update({'update': target})
+    else:
+        history = {"read": [], 'create': [], 'update': [request.path], 'delete': []}
+    return json.dumps(history)
+
+
+def delete_cookie(request):
+    history = request.COOKIES.get('history', None)
+    if history:
+        history = json.loads(history)
+        target = history.get('delete')
+        target.append(request.path)
+        history.update({'delete': target})
+    else:
+        history = {"read": [], 'create': [], 'update': [], 'delete': [request.path]}
+    return json.dumps(history)
 
 
 def home_page_view(request):
@@ -12,7 +59,10 @@ def home_page_view(request):
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
     context = {'page_obj': page_obj}
-    return render(request, 'taskmanager/home.html', context=context)
+    history = read_cookie(request)
+    response = render(request, 'taskmanager/home.html', context=context)
+    response.set_cookie('history', json.dumps(history))
+    return response
 
 
 def search_view(request):
@@ -28,7 +78,10 @@ def search_view(request):
         page_number = request.GET.get("page", 1)
         page_obj = paginator.get_page(page_number)
         context = {'page_obj': page_obj, 'search': search}
-        return render(request, 'taskmanager/search.html', context=context)
+        history = read_cookie(request)
+        response = render(request, 'taskmanager/search.html', context=context)
+        response.set_cookie('history', json.dumps(history))
+        return response
     else:
         return render(request, 'taskmanager/search.html')
 
@@ -49,8 +102,11 @@ def tasks_list_view(request):
     category = Category.objects.all()
     context = {'page_obj': page_obj, 'order': order, 'ad': ad,
                'status': dict(Task.STATUS_CHOICES), 'tag': tags, 'category': category}
+    history = read_cookie(request)
+    response = render(request, 'taskmanager/view_all.html', context=context)
+    response.set_cookie('history', json.dumps(history))
 
-    return render(request, 'taskmanager/view_all.html', context=context)
+    return response
 
 
 def task_detail_view(request, pk):
@@ -59,7 +115,11 @@ def task_detail_view(request, pk):
     tags = Tag.objects.all()
     category = Category.objects.all()
     context = {'task': task, 'notes': notes, 'status': dict(Task.STATUS_CHOICES), 'tag': tags, 'category': category}
-    return render(request, 'taskmanager/task_detail.html', context=context)
+    history = read_cookie(request)
+    response = render(request, 'taskmanager/task_detail.html', context=context)
+    response.set_cookie('history', json.dumps(history))
+
+    return response
 
 
 def categories_view(request):
@@ -68,8 +128,11 @@ def categories_view(request):
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
     context = {'page_obj': page_obj}
+    history = read_cookie(request)
+    response = render(request, 'taskmanager/categories.html', context=context)
+    response.set_cookie('history', json.dumps(history))
 
-    return render(request, 'taskmanager/categories.html', context=context)
+    return response
 
 
 def category_task_view(request, cat):
@@ -79,14 +142,20 @@ def category_task_view(request, cat):
     page_obj = paginator.get_page(page_number)
     tags = Tag.objects.all()
     context = {'page_obj': page_obj, 'category': cat, 'status': dict(Task.STATUS_CHOICES), 'tag': tags}
-    return render(request, 'taskmanager/cat_detail.html', context=context)
+    history = read_cookie(request)
+    response = render(request, 'taskmanager/cat_detail.html', context=context)
+    response.set_cookie('history', json.dumps(history))
+    return response
 
 
 def category_create_view(request):
     title = request.POST.get('title')
     description = request.POST.get('description')
     Category.objects.create(name=title, description=description)
-    return redirect('categories')
+    history = create_cookie(request)
+    response = redirect('categories')
+    response.set_cookie('history', json.dumps(history))
+    return response
 
 
 def task_create_view(request):
@@ -103,7 +172,11 @@ def task_create_view(request):
 
     Task.objects.create(title=title, description=description,
                         category=category, due_date=due_date, status=status).tags.set(tags_list)
-    return redirect('task_list')
+
+    history = create_cookie(request)
+    response = redirect('task_list')
+    response.set_cookie('history', json.dumps(history))
+    return response
 
 
 def task_cat_create_view(request, cat):
@@ -120,13 +193,19 @@ def task_cat_create_view(request, cat):
 
     Task.objects.create(title=title, description=description,
                     category=category, due_date=due_date, status=status).tags.set(tags_list)
-    return redirect('category_task', cat)
+    history = create_cookie(request)
+    response = redirect('category_task', cat)
+    response.set_cookie('history', json.dumps(history))
+    return response
 
 
 def category_detail_view(request, pk):
     category = Category.objects.get(id=pk)
     context = {'category': category}
-    return render(request, 'taskmanager/category_detail.html', context=context)
+    history = read_cookie(request)
+    response = render(request, 'taskmanager/category_detail.html', context=context)
+    response.set_cookie('history', json.dumps(history))
+    return response
 
 
 def category_update_view(request, pk):
@@ -141,8 +220,11 @@ def category_update_view(request, pk):
         post.description = description
 
     post.save()
+    history = update_cookie(request)
+    response = redirect('category_detail', pk)
+    response.set_cookie('history', json.dumps(history))
 
-    return redirect('category_detail', pk)
+    return response
 
 
 def task_update_view(request, pk):
@@ -159,6 +241,7 @@ def task_update_view(request, pk):
     category = request.POST.get('category')
     due_date = request.POST.get('due_date')
     status = request.POST.get('status')
+    file = request.POST.get('file')
 
     if title:
         task.title = title
@@ -175,13 +258,20 @@ def task_update_view(request, pk):
 
     task.save()
 
-    return redirect('task_detail', pk)
+    history = update_cookie(request)
+    response = redirect('task_detail', pk)
+    response.set_cookie('history', json.dumps(history))
+
+    return response
 
 
 def tag_detail_view(request, pk):
     tag = Tag.objects.get(id=pk)
     context = {'tag': tag}
-    return render(request, 'taskmanager/tag_detail.html', context=context)
+    history = read_cookie(request)
+    response = render(request, 'taskmanager/tag_detail.html', context=context)
+    response.set_cookie('history', json.dumps(history))
+    return response
 
 
 def tag_update_view(request, pk):
@@ -197,27 +287,60 @@ def tag_update_view(request, pk):
 
     tag.save()
 
-    return redirect('tag_detail', pk)
+    history = update_cookie(request)
+    response = redirect('tag_detail', pk)
+    response.set_cookie('history', json.dumps(history))
+
+    return response
 
 
-def tag_create_view(request):
+def tag_create_view(request, taskpk):
     title = request.POST.get('title')
     description = request.POST.get('description')
     tag = Tag.objects.create(name=title, description=description)
-    # task = Task.objects.get(pk=taskpk).tags
+    task = Task.objects.get(pk=taskpk)
+    task.tags.add(tag)
+    task.save()
 
-    return redirect('tag_detail', tag.id)
+    history = create_cookie(request)
+    response = redirect('task_detail', taskpk)
+    response.set_cookie('history', json.dumps(history))
+
+    return response
 
 
-def delete_view(request, mod, pk):
-    if mod == "tag":
-        obj = get_object_or_404(Tag, pk=pk)
-    if mod == "cat":
-        obj = get_object_or_404(Category, pk=pk)
-    if mod == "task":
-        obj = get_object_or_404(Task, pk=pk)
-    if request.method == 'POST':
-        obj.delete()
-        return redirect('home')
-    return render(request, 'taskmanager/delete.html', context={'obj': obj, 'mod': mod})
+# def delete_view(request, mod, pk):
+#     if mod == "tag":
+#         obj = get_object_or_404(Tag, pk=pk)
+#     if mod == "cat":
+#         obj = get_object_or_404(Category, pk=pk)
+#     if mod == "task":
+#         obj = get_object_or_404(Task, pk=pk)
+#     if request.method == 'POST':
+#         obj.delete()
+#         return redirect('home')
+#     return render(request, 'taskmanager/delete.html', context={'obj': obj, 'mod': mod})
+
+
+def task_delete_view(request, pk):
+    post = get_object_or_404(Task, pk=pk)
+    post.delete()
+    history = delete_cookie(request)
+    response = redirect('task_list')
+    response.set_cookie('history', json.dumps(history))
+    return response
+
+
+def category_delete_view(request, pk):
+    post = get_object_or_404(Category, pk=pk)
+    post.delete()
+    history = delete_cookie(request)
+    response = redirect('task_detail')
+    response.set_cookie('history', json.dumps(history))
+    return response
+
+
+def history_view(request):
+    context = json.loads(request.COOKIES.get('history'))
+    return render(request, 'taskmanager/histories.html', context=dict(context))
 

@@ -18,9 +18,7 @@
                         <a href="{% url 'tag_detail' tag.id %}"><h4 class="small text-muted mt-2">{{ tag }}</h4></a>
                     {% endfor %}
                     <p class="small text-muted mt-2">Due date: {{ task.category }}</p>
-                    <div>
-                        <a href="{% url 'delete' 'task' task.id %}" class="btn btn-sm btn-danger">Delete</a>
-                    </div>
+
                 </div>
 
                 <div class="card shadow my-3 p-5">
@@ -101,7 +99,7 @@
             <div class="col-9">
                 <div class="card shadow my-3 p-5">
                     <h3>Add new Tag:</h3>
-                    <form action="{% url 'tag_create' %}" method="POST">
+                    <form action="{% url 'tag_create' task.id %}" method="POST">
                         {% csrf_token %}
                         <div class="form-group py-2">
                             <label class="py-1">Enter Tag title</label>

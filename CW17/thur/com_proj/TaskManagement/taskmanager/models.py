@@ -7,6 +7,7 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to="images/", null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -25,6 +26,7 @@ class Tag(models.Model):
 
 
 class Task(models.Model):
+    DEFAULT_CATEGORY = Category(name="None")
     STATUS_CHOICES = (
         ('d', 'Done'),
         ('t', 'To Do'),
@@ -36,7 +38,8 @@ class Task(models.Model):
     due_date = models.DateField()
     status = models.CharField(choices=STATUS_CHOICES, max_length=3)
     tags = models.ManyToManyField(Tag)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    file = models.FileField(upload_to="files/", null=True, blank=True)
 
     def __str__(self):
         return self.title

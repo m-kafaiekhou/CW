@@ -23,7 +23,27 @@
                                     <blockquote class="blockquote mb-0">
                                         <p>{{ task.date_created }}</p>
                                         <a href="{% url 'category_detail' task.id %}"><h3>Details</h3></a>
+
                                     </blockquote>
+                                </div>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#{{ task.name }}{{ task.id }}">
+                                    Delete
+                                </button>
+                                <div class="modal fade" id="{{ task.name }}{{ task.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure?</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Are you sure you want to delete {{ task.name }} permanently?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{% url 'delete_task' task.id %}"><button class="btn btn-danger" type="submit">Delete</button></a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </a>
