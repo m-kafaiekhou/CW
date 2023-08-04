@@ -137,3 +137,5 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'user.backends.CustomModelBackend',
 ]
+
+LOGIN_REDIRECT_URL = 'home'

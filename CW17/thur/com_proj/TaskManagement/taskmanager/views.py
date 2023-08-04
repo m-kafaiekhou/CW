@@ -59,9 +59,9 @@ def home_page_view(request):
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
     context = {'page_obj': page_obj}
-    history = read_cookie(request)
+    # history = read_cookie(request)
     response = render(request, 'taskmanager/home.html', context=context)
-    response.set_cookie('history', json.dumps(history))
+    # response.set_cookie('history', json.dumps(history))
     return response
 
 
