@@ -48,7 +48,7 @@ class Task(models.Model):
 class Note(models.Model):
     note = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    task = models.ForeignKey(Task, on_delete=models.PROTECT)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.note[:30]}...'
