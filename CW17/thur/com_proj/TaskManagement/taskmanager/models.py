@@ -1,4 +1,5 @@
 from django.db import models
+from user.models import CustomUser
 
 # Create your models here.
 
@@ -33,7 +34,7 @@ class Task(models.Model):
         ('dnf', 'Did Not Finish'),
     )
 
-    author = models.ForeignKey("user.CustomUser", on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
     due_date = models.DateField()
