@@ -33,6 +33,7 @@ class Task(models.Model):
         ('dnf', 'Did Not Finish'),
     )
 
+    author = models.ForeignKey("user.CustomUser", on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
     due_date = models.DateField()
@@ -51,4 +52,4 @@ class Note(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.note[:30]}...'
+        return self.task
