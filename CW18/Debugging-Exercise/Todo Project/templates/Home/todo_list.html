@@ -2,7 +2,12 @@
 {% block title %}{% endblock %}
 
 {% block content %}
+    {% for obj in todos %}
+        {% if obj.user == user %}
     <div class="card">
-        {{ todos }}
+        <a href="{% url 'todo_detail' obj.id %}">{{ obj.title }}</a>
+        {{ obj.is_completed }}
     </div>
+        {% endif %}
+    {% endfor %}
 {% endblock %}

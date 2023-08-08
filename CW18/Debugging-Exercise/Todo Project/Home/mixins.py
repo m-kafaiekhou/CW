@@ -17,7 +17,9 @@ class TodoMixin(View):
 
     def get(self, request, *args, **kwargs):
         todo = Todo.objects.get(id=kwargs['pk'])
-        return render(request, self.template_name, {'todo': todo, 'form': self.form_class()})
+        return render(request, self.template_name,
+                      {'todo': todo, 'form': self.form_class(initial={
+                        'title': todo.title, 'description': todo.description, 'is_completed': todo.is_completed})})
 
     def post(self, request, pk):
         todo = Todo.objects.get(id=pk)
