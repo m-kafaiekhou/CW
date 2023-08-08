@@ -5,4 +5,11 @@
     <div class="card">
         {{ todo }}
     </div>
+
+        <form method="post" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit"></button>
+        </form>
+
 {% endblock %}
