@@ -7,3 +7,4 @@ class TodoForm(forms.ModelForm):
         model = Todo
         fields = ['title', 'description', 'is_completed']
 
+
