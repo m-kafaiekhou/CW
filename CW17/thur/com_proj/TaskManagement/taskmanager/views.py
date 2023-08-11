@@ -4,7 +4,7 @@ from django.db.models import Q
 from .models import Task, Note, Category, Tag
 import json
 from django.views import View
-from .mixins import TodoOwnerRequiredMixin
+from .mixins import TodoOwnerRequiredMixin, ObjectGetUpdateMixin
 
 
 def read_cookie(request):
@@ -111,7 +111,9 @@ def tasks_list_view(request):
     return response
 
 
-class TaskDetailView(TodoOwnerRequiredMixin, View):
+class TaskDetailView(ObjectGetUpdateMixin, View):
+    model_class = Task
+
     def get(self, request, *args, **kwargs):
         task = Task.objects.get(id=kwargs['pk'])
         notes = Note.objects.filter(task=task)

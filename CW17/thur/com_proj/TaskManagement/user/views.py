@@ -35,12 +35,12 @@ class ProfileView(OwnerRequiredMixin, View):
     template_name = 'registration/profile.html'
 
     def get(self, request, *args, **kwargs):
-        user = CustomUser.objects.get(pk=kwargs['pk'])
+        user = request.user
         form = self.form_class(instance=user)
         return render(request, self.template_name, context={'form': form})
 
     def post(self, request, *args, **kwargs):
-        user = CustomUser.objects.get(pk=kwargs['pk'])
+        user = request.user
         form = self.form_class(request.POST, instance=user)
 
         if form.is_valid():
