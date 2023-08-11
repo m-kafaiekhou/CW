@@ -15,7 +15,7 @@ class TodoListView(View):
         return render(request, 'Home/todo_list.html', {'todos': todos})
 
 
-class TodoDetailView(TodoMixin):
+class TodoDetailView(TodoMixin, View):
     template_name = 'Home/todo_detail.html'
 
 
