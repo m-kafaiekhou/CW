@@ -2,8 +2,10 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/BlogPlatformProject" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/CW&amp;" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/CW10" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/CW9" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Quiz/BlogPlatformProject" vcs="Git" />
   </component>
 </project>

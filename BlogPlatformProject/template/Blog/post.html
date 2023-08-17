@@ -1,81 +1,65 @@
-{% extends 'base.html' %}
-{% block title %}
-    <title>All Posts </title>
-{% endblock title %}
-{% block content %}
-    <!-- Post Content-->
-    <article class="mb-4">
-        <div class="container px-4 px-lg-5">
-            <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
-                    <h2 class="post-title">{{ post.title }}</h2>
-                    <p>{{ post.content }}}</p>
-                    <p>
-                        Placeholder text by
-                        <a href="#">{{ post.author }}</a>
-                        in
-                        <a href="#">{{ post.publication_date }}</a>
+{%extends 'base.html'%}
+ {% block title%}
+        <title>All Posts </title>
+{%endblock title%}
+{% block content%}
+        <!-- Post Content-->
+        <article class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <h2 class="post-title">{{post.title}}</h2>
+                        <p>{{post.content}}</p>
+                        <p>
+                            Placeholder text by
+                            <a href="#">{{post.author}}</a>
+                            in
+                            <a href="#">{{post.publication_date}}</a>
 
-                    </p>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </article>
-    <!-- Divider-->
-    <hr class="my-4"/>
-    <!-- Post Comment-->
-    <article class="mb-4">
-        <div class="container px-4 px-lg-5">
-            <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="container my-4">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="row">
-                                {% if comments %}
-                                    {% for cat in comments %}
-                                        <div class="col-lg-6">
-                                                <div class="card shadow-sm my-3">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">{{ cat.author}}</h5>
-                                                        <p class="card-text py-3">
-                                                            {{ cat.content }}
-                                                        </p>
-                                                        <p>
-                                                            <h5 class="text text-muted">{{ cat.comment_date }}</h5>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                        </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <h1 class="text-bold shadow-sm">No Data Found 404!</h1>
-                                {% endif %}
+        </article>
+<!-- Divider-->
+                    <hr class="my-4" />
+ <!-- Post Comment-->
+        <article class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    {% for comment in comments %}
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <h2 class="post-title"></h2>
+                        <p>{{comment.content}}</p>
+                        <p>
+                            comment write  by
+                            <a href="#">{{comment.author}}</a>
+                            in
+                            <a href="#">{{comment.comment_date}}</a>
+                            <a href="{% url 'blog:comment_update' comment.id%}" class="btn btn-primary mt-5" >update</a>
+
+                        </p>
+                    </div>
+                    {% endfor%}
+                </div>
             </div>
-        </div>
-    </article>
+        </article>
 
 
-    <!-- Form Comment -->
-    <article class="mb-4">
-        <div class="container px-4 px-lg-5">
+<!-- Form Comment -->
+<article class="mb-4">
+<div class="container px-4 px-lg-5">
 
-                <form action="" method="post">
-                {% csrf_token %}
-                    <p>
-                        <label for="author">Author</label>
-                        <select id="author" name="author">
-                            {% for aut in authors %}
-                                <option value="{{ aut }}">{{ aut.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </p>
-                    <p>
-                        <label for="comment">Comment</label>
-                        <textarea type="text" id="comment" name="comment" placeholder="Write your comment here"></textarea>
-                    </p>
-                <input type="submit" value="send">
-                </form>
+<form class=" row gx-4 gx-lg-5 justify-content-center needs-validation" novalidate method="post" action="{% url 'blog:post_details' post.id %}">
+      {% csrf_token %}
+  <div class="col-md-4">
+        {{form.as_p}}
+       <button class="btn btn-primary mt-5" type="submit">Submit form</button>
+  </div>
+</form>
+</div>
+</article>
 
-        </div>
-    </article>
-{% endblock content %}
+
+
+{% endblock content%}
