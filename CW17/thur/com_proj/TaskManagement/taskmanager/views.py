@@ -174,20 +174,55 @@ class TaskListView(generic.ListView):
         return response
 
 
-class TaskDetailView(ObjectGetUpdateMixin, View):
-    model_class = Task
+class TaskDetailView(generic.DetailView):
+    model = Task
+    template_name = 'taskmanager/task_detail.html'
 
-    def get(self, request, *args, **kwargs):
-        task = Task.objects.get(id=kwargs['pk'])
-        notes = Note.objects.filter(task=task)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        notes = Note.objects.filter(task=context['task'])
         tags = Tag.objects.all()
         category = Category.objects.all()
-        context = {'task': task, 'notes': notes, 'status': dict(Task.STATUS_CHOICES), 'tag': tags, 'category': category}
-        # history = read_cookie(request)
-        response = render(request, 'taskmanager/task_detail.html', context=context)
+        context.update({'notes': notes, 'status': dict(Task.STATUS_CHOICES), 'tag': tags, 'category': category})
+        return context
+
+    def post(self, request, *args, **kwargs):
+        task = Task.objects.get(pk=kwargs['pk'])
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        tags = request.POST.get('tag')
+        tags_list = []
+        try:
+            for tag in tags:
+                tags_list.append(Tag.objects.get(id=tag))
+        except:
+            pass
+        category = request.POST.get('category')
+        due_date = request.POST.get('due_date')
+        status = request.POST.get('status')
+        file = request.POST.get('file')
+
+        if title:
+            task.title = title
+        if description:
+            task.description = description
+        if tags_list:
+            task.tags.set(tags_list)
+        if category != "none":
+            task.category = Category.objects.get(id=category)
+        if due_date:
+            task.due_date = due_date
+        if status != "none":
+            task.status = status
+
+        task.save()
+
+        # history = update_cookie(request)
+        response = redirect('task_detail', kwargs['pk'])
         # response.set_cookie('history', json.dumps(history))
 
         return response
+
 # def task_detail_view(request, pk):
 #     task = Task.objects.get(id=pk)
 #     notes = Note.objects.filter(task=task)
