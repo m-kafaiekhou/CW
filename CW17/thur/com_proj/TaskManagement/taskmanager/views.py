@@ -5,6 +5,7 @@ from .models import Task, Note, Category, Tag
 import json
 from django.views import View
 from .mixins import TodoOwnerRequiredMixin, ObjectGetUpdateMixin
+from django.views import generic
 
 
 def read_cookie(request):
@@ -55,16 +56,31 @@ def delete_cookie(request):
     return json.dumps(history)
 
 
-def home_page_view(request):
-    tasks = Task.objects.all()
-    paginator = Paginator(tasks, 6)
-    page_number = request.GET.get("page", 1)
-    page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj}
-    # history = read_cookie(request)
-    response = render(request, 'taskmanager/home.html', context=context)
-    # response.set_cookie('history', json.dumps(history))
-    return response
+# def home_page_view(generic):
+#     tasks = Task.objects.all()
+#     paginator = Paginator(tasks, 6)
+#     page_number = request.GET.get("page", 1)
+#     page_obj = paginator.get_page(page_number)
+#     context = {'page_obj': page_obj}
+#     # history = read_cookie(request)
+#     response = render(request, 'taskmanager/home.html', context=context)
+#     # response.set_cookie('history', json.dumps(history))
+#     return response
+
+
+class HomePage(generic.ListView):
+    template_name = 'taskmanager/home.html'
+    model = Task
+    context_object_name = 'tasks'
+
+    def get_context_data(self, **kwargs):
+        objs = self.model.objects.all()
+        page_number = self.request.GET.get("page", 1)
+        paginator = Paginator(objs, 6)
+        page_obj = paginator.get_page(page_number)
+        context = {'page_obj': page_obj}
+        return context
+
 
 
 def search_view(request):
@@ -88,27 +104,74 @@ def search_view(request):
         return render(request, 'taskmanager/search.html')
 
 
-def tasks_list_view(request):
-    tasks = Task.objects.all()
-    order = request.GET.get('order', 'due_date')
-    ad = request.GET.get('ad', 'asc')
-    if ad == "desc":
-        tasks = tasks.order_by(f"-{order}")
-    else:
-        tasks = tasks.order_by(order)
+# def tasks_list_view(request):
+#     tasks = Task.objects.all()
+#     order = request.GET.get('order', 'due_date')
+#     ad = request.GET.get('ad', 'asc')
+#     if ad == "desc":
+#         tasks = tasks.order_by(f"-{order}")
+#     else:
+#         tasks = tasks.order_by(order)
+#
+#     paginator = Paginator(tasks, 6)
+#     page_number = request.GET.get("page", 1)
+#     page_obj = paginator.get_page(page_number)
+#     tags = Tag.objects.all()
+#     category = Category.objects.all()
+#     context = {'page_obj': page_obj, 'order': order, 'ad': ad,
+#                'status': dict(Task.STATUS_CHOICES), 'tag': tags, 'category': category}
+#     # history = read_cookie(request)
+#     response = render(request, 'taskmanager/view_all.html', context=context)
+#     # response.set_cookie('history', json.dumps(history))
+#
+#     return response
 
-    paginator = Paginator(tasks, 6)
-    page_number = request.GET.get("page", 1)
-    page_obj = paginator.get_page(page_number)
-    tags = Tag.objects.all()
-    category = Category.objects.all()
-    context = {'page_obj': page_obj, 'order': order, 'ad': ad,
-               'status': dict(Task.STATUS_CHOICES), 'tag': tags, 'category': category}
-    # history = read_cookie(request)
-    response = render(request, 'taskmanager/view_all.html', context=context)
-    # response.set_cookie('history', json.dumps(history))
 
-    return response
+class TaskListView(generic.ListView):
+    template_name = 'taskmanager/view_all.html'
+    model = Task
+
+    def get_context_data(self, **kwargs):
+        tasks = self.model.objects.all()
+        order = self.request.GET.get('order', 'due_date')
+        ad = self.request.GET.get('ad', 'asc')
+        if ad == "desc":
+            tasks = tasks.order_by(f"-{order}")
+        else:
+            tasks = tasks.order_by(order)
+
+        paginator = Paginator(tasks, 6)
+        page_number = self.request.GET.get("page", 1)
+        page_obj = paginator.get_page(page_number)
+        tags = Tag.objects.all()
+        category = Category.objects.all()
+        context = {'page_obj': page_obj, 'order': order, 'ad': ad,
+                   'status': dict(Task.STATUS_CHOICES), 'tag': tags, 'category': category}
+        return context
+
+    def post(self, request, *args, **kwargs):
+        print("****************************")
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        tags = request.POST.get('tag')
+        print("****************************")
+        tags_list = []
+        for tag in tags:
+            tags_list.append(Tag.objects.get(id=tag))
+
+        category = Category.objects.get(id=request.POST.get('category'))
+        due_date = request.POST.get('due_date')
+        status = request.POST.get('status')
+
+        try:
+            self.model.objects.create(title=title, description=description, category=category,
+                                      due_date=due_date, status=status, author=request.user).tags.set(tags_list)
+        except:
+            pass
+        # history = create_cookie(request)
+        response = redirect('task_list')
+        # response.set_cookie('history', json.dumps(history))
+        return response
 
 
 class TaskDetailView(ObjectGetUpdateMixin, View):
@@ -138,17 +201,40 @@ class TaskDetailView(ObjectGetUpdateMixin, View):
 #     return response
 
 
-def categories_view(request):
-    categories = Category.objects.all()
-    paginator = Paginator(categories, 6)
-    page_number = request.GET.get("page", 1)
-    page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj}
-    # history = read_cookie(request)
-    response = render(request, 'taskmanager/categories.html', context=context)
-    # response.set_cookie('history', json.dumps(history))
+# def categories_view(request):
+#     categories = Category.objects.all()
+#     paginator = Paginator(categories, 6)
+#     page_number = request.GET.get("page", 1)
+#     page_obj = paginator.get_page(page_number)
+#     context = {'page_obj': page_obj}
+#     # history = read_cookie(request)
+#     response = render(request, 'taskmanager/categories.html', context=context)
+#     # response.set_cookie('history', json.dumps(history))
+#
+#     return response
 
-    return response
+
+class CategoryListView(generic.ListView):
+    template_name = 'taskmanager/categories.html'
+    model = Category
+    context_object_name = 'categories'
+
+    def get_context_data(self, **kwargs):
+        objs = self.model.objects.all()
+        page_number = self.request.GET.get("page", 1)
+        paginator = Paginator(objs, 6)
+        page_obj = paginator.get_page(page_number)
+        context = {'page_obj': page_obj}
+        return context
+
+    def post(self, request, *args, **kwargs):
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        self.model.objects.create(name=title, description=description)
+        # history = create_cookie(request)
+        response = redirect('categories')
+        # response.set_cookie('history', json.dumps(history))
+        return response
 
 
 def category_task_view(request, cat):
@@ -215,13 +301,37 @@ def task_cat_create_view(request, cat):
     return response
 
 
-def category_detail_view(request, pk):
-    category = Category.objects.get(id=pk)
-    context = {'category': category}
-    history = read_cookie(request)
-    response = render(request, 'taskmanager/category_detail.html', context=context)
-    response.set_cookie('history', json.dumps(history))
-    return response
+# def category_detail_view(request, pk):
+#     category = Category.objects.get(id=pk)
+#     context = {'category': category}
+#     history = read_cookie(request)
+#     response = render(request, 'taskmanager/category_detail.html', context=context)
+#     response.set_cookie('history', json.dumps(history))
+#     return response
+
+
+class CategoryDetailView(generic.DetailView):
+    template_name = 'taskmanager/category_detail.html'
+    model = Category
+    success_url = 'category_detail'
+
+    def post(self, request, *args, **kwargs):
+        post = self.model.objects.get(pk=kwargs['pk'])
+
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+
+        if name:
+            post.name = name
+        if description:
+            post.description = description
+
+        post.save()
+        # history = update_cookie(request)
+        response = redirect(self.success_url, kwargs['pk'])
+        # response.set_cookie('history', json.dumps(history))
+
+        return response
 
 
 def category_update_view(request, pk):
