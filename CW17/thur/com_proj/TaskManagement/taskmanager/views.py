@@ -400,9 +400,14 @@ def category_update_view(request, pk):
     return response
 
 
-class TaskUpdateView(TodoOwnerRequiredMixin, View):
+class TaskUpdateView(generic.UpdateView):
+    model = Task
+    template_name = "taskmanager/view_all.html"
+    fields = ['title', 'due_date', 'status', 'description', 'tags', 'category']
+    success_url = reverse_lazy('task_list')
+
     def post(self, request, *args, **kwargs):
-        task = Task.objects.get(pk=kwargs['pk'])
+        task = self.model.objects.get(pk=kwargs['pk'])
         title = request.POST.get('title')
         description = request.POST.get('description')
         tags = request.POST.get('tag')
