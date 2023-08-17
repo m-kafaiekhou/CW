@@ -3,9 +3,11 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import Task, Note, Category, Tag
 import json
+from django.urls import reverse_lazy
 from django.views import View
 from .mixins import TodoOwnerRequiredMixin, ObjectGetUpdateMixin
 from django.views import generic
+from .forms import TaskCreateForm
 
 
 def read_cookie(request):
@@ -222,6 +224,16 @@ class TaskDetailView(generic.DetailView):
         # response.set_cookie('history', json.dumps(history))
 
         return response
+
+
+class TaskCreateView(generic.CreateView):
+    model = Task
+    template_name = 'taskmanager/task_create.html'
+    success_url = reverse_lazy('task_list')
+    form_class = TaskCreateForm
+
+    def get_initial(self):
+        return {'author': self.request.user}
 
 # def task_detail_view(request, pk):
 #     task = Task.objects.get(id=pk)

@@ -5,4 +5,5 @@ from .models import Task
 class TaskCreateForm(forms.ModelForm):
     class Meta:
         model = Task
-        widgets = {'author': forms.HiddenInput }
+        fields = "__all__"
+        widgets = {'author': forms.HiddenInput}

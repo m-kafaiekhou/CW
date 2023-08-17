@@ -18,6 +18,7 @@ from .views import (
     task_delete_view,
     category_delete_view,
     history_view,
+    TaskCreateView,
 )
 
 urlpatterns = [
@@ -28,7 +29,6 @@ urlpatterns = [
     path('categories/', CategoryListView.as_view(), name="categories"),
     path('categories/<str:cat>/', category_task_view, name="category_task"),
     path('category/create/', category_create_view, name='category_create'),
-    path('task/create/', task_create_view, name='task_create'),
     path('task/create/<str:cat>/', task_cat_create_view, name="task_cat"),
     path('category/detail/<int:pk>/', CategoryDetailView.as_view(), name='category_detail'),
     path('category/update/<int:pk>/', category_update_view, name='category_update'),
@@ -39,4 +39,5 @@ urlpatterns = [
     path('delete/task/<int:pk>/', task_delete_view, name='delete_task'),
     path('delete/categroy/<int:pk>/', category_delete_view, name='delete_category'),
     path('History/', history_view, name='Histories'),
+    path('task_create/', TaskCreateView.as_view(), name='task_create'),
 ]
