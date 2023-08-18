@@ -44,6 +44,7 @@ class Task(models.Model):
     file = models.FileField(upload_to="files/", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False, null=True)
     updated = models.DateTimeField(auto_now=True, editable=False, null=True)
+    is_active = models.BooleanField(default=True, editable=False)
 
     def __str__(self):
         return self.title
