@@ -2,7 +2,6 @@ from django.contrib import admin
 from .models import CustomUser
 from taskmanager.models import Task
 from django.db.models import Count
-
 # Register your models here.
 
 
@@ -34,7 +33,13 @@ class CustomUserAdmin(admin.ModelAdmin):
     def number_of_tasks(self, obj):
         return obj.number_of_tasks
 
-    list_display = ['username', 'email', 'is_staff', 'number_of_tasks']
+    def is_great_user(self, obj):
+        return obj.number_of_tasks > 10
+
+    list_display = ['username', 'email', 'is_staff', 'number_of_tasks', 'is_great_user']
+
+    readonly_fields = ['img_preview']
+
     number_of_tasks.admin_order_field = 'number_of_tasks'
     list_filter = (UserGreatFilter, )
 

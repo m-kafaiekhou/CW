@@ -42,6 +42,8 @@ class Task(models.Model):
     tags = models.ManyToManyField(Tag)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     file = models.FileField(upload_to="files/", null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False, null=True)
+    updated = models.DateTimeField(auto_now=True, editable=False, null=True)
 
     def __str__(self):
         return self.title

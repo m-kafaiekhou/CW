@@ -9,6 +9,8 @@ class TaskAdmin(admin.ModelAdmin):
     list_per_page = 20
     list_display = ['title', 'status', 'category']
 
+    readonly_fields = ['created_at', 'updated']
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
