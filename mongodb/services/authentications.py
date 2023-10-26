@@ -1,8 +1,17 @@
 import jwt
 import time
-from config.settings import SECRET_KEY, JWT_ALGORITHM
+from config.settings import get_settings
 from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from db.mongo import db
+from db.db_func import get_one
+
+settings = get_settings()
+
+SECRET_KEY = settings.secret_key
+JWT_ALGORITHM = settings.jwt_algorithm
+
+jwt_collection = db['token']
 
 
 def decode(token):
@@ -38,14 +47,19 @@ class JWTBearer(HTTPBearer):
         else:
             raise HTTPException(status_code=403, detail="Invalid authorization code.")
 
-    def verify_jwt(self, jwtoken: str) -> bool:
+    async def verify_jwt(self, jwtoken: str) -> bool:
         isTokenValid: bool = False
 
         try:
-            payload = decode(jwtoken)
+            payload = await decode(jwtoken)
+
         except:
             payload = None
         if payload:
-            isTokenValid = True
+            jti = payload['jti']
+            token = await get_one({'jti': jti}, jwt_collection)
+
+            if token is not None:
+                isTokenValid = True
         return isTokenValid
     
